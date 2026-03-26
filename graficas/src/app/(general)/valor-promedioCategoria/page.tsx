@@ -31,7 +31,7 @@ export default function Page() {
     labels: [] as string[],
     datasets: [
       {
-        label: "Valor promedio por categoría",
+        label: "Valor promedio de productos por categoría",
         data: [] as number[],
         fill: false,
         borderColor: "rgb(75, 192, 192)",
@@ -44,13 +44,15 @@ export default function Page() {
   useEffect(() => {
     fetchAvgValueByCategory().then((data) => {
       const labels = data.map((item: any) => item.category_code);
-      const values = data.map((item: any) => Number(item.valor_promedio));
+      const values = data.map((item: any) =>
+        Number(Number(item.valor_promedio).toFixed(2))
+      );
 
       setChartData({
         labels,
         datasets: [
           {
-            label: "Valor promedio por categoría",
+            label: "Valor promedio de productos por categoría",
             data: values,
             fill: false,
             borderColor: "rgb(75, 192, 192)",
@@ -70,7 +72,7 @@ export default function Page() {
       },
       title: {
         display: true,
-        text: "Valor promedio por category_code",
+        text: "Gráfico lineal del valor promedio de productos por categoría",
       },
     },
   };
@@ -80,7 +82,7 @@ export default function Page() {
       <div className="mx-auto max-w-5xl rounded-xl bg-white p-8 shadow-md">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-800">
-            Valor promedio por categoría
+            Valor promedio de productos por categoría
           </h1>
           <Link href="/" className="rounded-md bg-slate-800 px-4 py-2 text-white">
             Volver

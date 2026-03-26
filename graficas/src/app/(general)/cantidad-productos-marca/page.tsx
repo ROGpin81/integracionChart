@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { fetchSumValueByProductType } from "@/services/api";
-import { Doughnut } from "react-chartjs-2";
+import { fetchCountProductsByBrand } from "@/services/api";
+import { Pie } from "react-chartjs-2";
 import Link from "next/link";
 
 import {
@@ -10,16 +10,17 @@ import {
   ArcElement,
   Tooltip,
   Legend,
+  Title,
 } from "chart.js";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 export default function Page() {
   const [chartData, setChartData] = useState({
     labels: [] as string[],
     datasets: [
       {
-        label: "Valor total por tipo de producto",
+        label: "Cantidad de productos por marca",
         data: [] as number[],
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)",
@@ -28,6 +29,10 @@ export default function Page() {
           "rgba(75, 192, 192, 0.6)",
           "rgba(153, 102, 255, 0.6)",
           "rgba(255, 159, 64, 0.6)",
+          "rgba(99, 255, 132, 0.6)",
+          "rgba(201, 203, 207, 0.6)",
+          "rgba(255, 140, 0, 0.6)",
+          "rgba(0, 191, 255, 0.6)",
         ],
         borderWidth: 1,
       },
@@ -35,15 +40,17 @@ export default function Page() {
   });
 
   useEffect(() => {
-    fetchSumValueByProductType().then((data) => {
-      const labels = data.map((item: any) => item.productType);
-      const values = data.map((item: any) => Number(item.valor_total));
+    fetchCountProductsByBrand().then((data) => {
+      const labels = data.map((item: any) => item.brand_code);
+      const values = data.map((item: any) =>
+        Number(item.cantidad_productos)
+      );
 
       setChartData({
         labels,
         datasets: [
           {
-            label: "Valor total por tipo de producto",
+            label: "Cantidad de productos por marca",
             data: values,
             backgroundColor: [
               "rgba(255, 99, 132, 0.6)",
@@ -52,6 +59,10 @@ export default function Page() {
               "rgba(75, 192, 192, 0.6)",
               "rgba(153, 102, 255, 0.6)",
               "rgba(255, 159, 64, 0.6)",
+              "rgba(99, 255, 132, 0.6)",
+              "rgba(201, 203, 207, 0.6)",
+              "rgba(255, 140, 0, 0.6)",
+              "rgba(0, 191, 255, 0.6)",
             ],
             borderWidth: 1,
           },
@@ -68,25 +79,25 @@ export default function Page() {
       },
       title: {
         display: true,
-        text: "Suma de value por productType",
+        text: "Gráfico de pastel de la cantidad de productos por marca",
       },
     },
   };
 
   return (
     <main className="min-h-screen bg-slate-100 p-8">
-      <div className="mx-auto max-w-4xl rounded-xl bg-white p-8 shadow-md">
+      <div className="mx-auto max-w-5xl rounded-xl bg-white p-8 shadow-md">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-800">
-            Total por tipo de producto
+            Cantidad de productos por marca
           </h1>
           <Link href="/" className="rounded-md bg-slate-800 px-4 py-2 text-white">
             Volver
           </Link>
         </div>
 
-        <div className="mx-auto max-w-xl">
-          <Doughnut data={chartData} options={options} />
+        <div className="mx-auto max-w-2xl">
+          <Pie data={chartData} options={options} />
         </div>
       </div>
     </main>
